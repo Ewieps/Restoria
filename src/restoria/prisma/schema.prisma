@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+
+model MenuItem {
+  id         Int        @id @default(autoincrement())
+  name       String
+  description String?
+  price      Float
+  category   String?
+  image      String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  orderItems OrderItem[]
+}
+
+model Order {
+  id         Int        @id @default(autoincrement())
+  customerName String
+  contact     String?
+  tableNumber Int?
+  items       OrderItem[]
+  total       Float
+  status      String     @default("pending")
+  createdAt   DateTime   @default(now())
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  order      Order   @relation(fields: [orderId], references: [id])
+  orderId    Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItemId Int
+  quantity   Int     @default(1)
+}
+
+model Reservation {
+  id        Int      @id @default(autoincrement())
+  name      String
+  contact   String
+  date      DateTime
+  guests    Int
+  note      String?
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+}
