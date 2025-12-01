@@ -6,10 +6,11 @@
 
 generator client {
   provider = "prisma-client-js"
+
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql" 
 }
 
 
@@ -59,4 +60,7 @@ model Reservation {
 model Admin {
   id       Int    @id @default(autoincrement())
   username String @unique
+  passHash String
+  role String @default("admin")
+  isActive Boolean @default(true)
 }
