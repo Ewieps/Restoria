@@ -62,5 +62,5 @@ model Admin {
   username String @unique
   passHash String
   role String @default("admin")
-  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
 }
