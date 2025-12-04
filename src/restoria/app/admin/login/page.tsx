@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
     try {
       setIsSubmitting(true);
 
-      const res = await fetch('/api/admin/auth/login', {
+      const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username.trim(), password }),
@@ -38,7 +38,6 @@ export default function AdminLoginPage() {
         throw new Error('No token returned from server');
       }
 
-      // store token and go to /admin
       localStorage.setItem('token', data.token);
       router.push('/admin');
     } catch (err: any) {

@@ -1,183 +1,275 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useUploadThing } from "@/lib/uploadthing";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUploadThing } from '@/lib/uploadthing';
+import type { OurFileRouter } from '@/app/api/uploadthing/core';
 
-export default function MenuConfiguration() {
-  const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    description: "",
-    category: "",
-  });
-  const [imageUrl, setImageUrl] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+type Props = {
+  onSuccess?: () => void;
+  editItem?: {
+    id: number;
+    name: string;
+    price: number;
+    category: string | null;
+    image: string | null;
+    description: string | null;
+  } | null;
+};
 
-  const { startUpload, isUploading } = useUploadThing("imageUploader", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    onClientUploadComplete: (res) => {
-      console.log("Client upload complete:", res);
-    },
-    onUploadError: (error) => {
-      console.error("Upload error:", error);
-      alert(`Upload failed: ${error.message}`);
-    },
-    onUploadBegin: () => {
-      console.log("Upload started");
-    }
-});
+type JwtPayload = {
+  adminId: number;
+  role: string;
+  exp?: number;
+};
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
+const CATEGORIES = ['main', 'side', 'drink', 'dessert'];
+
+function parseJwt(token: string): JwtPayload | null {
+  if (!token) return null;
+  try {
+    const [, payload] = token.split('.');
+    const decoded = atob(payload);
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+}
+
+export default function MenuConfiguration({ onSuccess, editItem }: Props) {
+  const router = useRouter();
+  const { startUpload } = useUploadThing("imageUploader", {
+    headers: () => {
+      const token = localStorage.getItem('token');
+      return {
+        Authorization: token ? `Bearer ${token}` : '',
       };
-      reader.readAsDataURL(file);
+    },
+  });
+
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState<string>('');
+  const [category, setCategory] = useState('');
+  const [image, setImage] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // optional: store role for UI decisions
+  const [role, setRole] = useState<string | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editItem) {
+      setName(editItem.name);
+      setPrice(editItem.price.toString());
+      setCategory(editItem.category || '');
+      setImage(editItem.image || '');
+      setDescription(editItem.description || '');
     }
-  };
+  }, [editItem]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem('token');
     if (!token) {
-      alert("You must be logged in to add a menu item.");
+      router.push('/admin/login');
       return;
     }
 
-    setUploading(true);
+    const payload = parseJwt(token);
+    if (!payload || !['mainadmin', 'store-manager'].includes(payload.role)) {
+      router.push('/admin/login');
+      return;
+    }
+
+    setRole(payload.role);
+    setCheckingAuth(false);
+  }, [router]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    if (!name.trim()) {
+      setError('Name is required');
+      return;
+    }
+    if (price === '' || Number(price) <= 0) {
+      setError('Price must be a positive number');
+      return;
+    }
 
     try {
-      let finalImageUrl = "";
+      setIsSubmitting(true);
+      const token = localStorage.getItem('token');
 
-      if (selectedFile) {
-        console.log("Starting upload...");
-        const uploadedFiles = await startUpload([selectedFile]);
-        console.log("Upload result:", uploadedFiles);
-        
-        if (uploadedFiles && uploadedFiles[0]) {
-          finalImageUrl = uploadedFiles[0].url;
-          console.log("Final image URL:", finalImageUrl);
-        } else {
-          throw new Error("Upload failed - no URL returned");
+      let imageUrl = image;
+
+      // Upload image if a file is selected
+      if (imageFile) {
+        try {
+          const uploadResult = await startUpload([imageFile]);
+          
+          if (!uploadResult || uploadResult.length === 0) {
+            throw new Error('Upload returned no results');
+          }
+          
+          imageUrl = uploadResult[0].url;
+        } catch (uploadError: any) {
+          console.error('Upload error:', uploadError);
+          throw new Error(`Failed to upload image: ${uploadError.message || 'Unknown error'}`);
         }
       }
 
-      const response = await fetch("/api/menu-items", {
-        method: "POST",
+      const url = editItem 
+        ? `/api/menu-items/${editItem.id}`
+        : '/api/menu-items';
+      
+      const method = editItem ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
         body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          price: parseFloat(formData.price),
-          category: formData.category,
-          image: finalImageUrl,
+          name: name.trim(),
+          description: description.trim() || null,
+          price: Number(price),
+          category: category.trim() || null,
+          image: imageUrl || null,
         }),
       });
 
-      if (response.ok) {
-        alert("Menu item added successfully!");
-        setFormData({ name: "", price: "", description: "", category: "" });
-        setImageUrl("");
-        setSelectedFile(null);
-      } else {
-        const error = await response.json();
-        alert(`Failed to add menu item: ${error.message}`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `Failed to ${editItem ? 'update' : 'create'} item`);
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert(`An error occurred: ${error}`);
+
+      setName('');
+      setPrice('');
+      setCategory('');
+      setImage('');
+      setImageFile(null);
+      setDescription('');
+
+      onSuccess?.();
+    } catch (err: any) {
+      setError(err.message ?? 'Unknown error');
     } finally {
-      setUploading(false);
+      setIsSubmitting(false);
     }
-  };
+  }
+
+  if (checkingAuth) {
+    return <div className="p-4 text-sm">Checking admin access…</div>;
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-6 space-y-4">
-      <div>
-        <label className="block mb-2 font-medium">Name</label>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-wrap items-end gap-3 rounded-md border border-slate-200 bg-white p-4"
+    >
+      <div className="min-w-[180px] flex-1">
+        <label className="block text-xs font-medium text-slate-600">
+          Name
+        </label>
         <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full border p-2 rounded"
-          required
+          className="mt-1 w-full rounded border px-2 py-1 text-sm"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Nasi Goreng Spesial"
         />
       </div>
 
-      <div>
-        <label className="block mb-2 font-medium">Price</label>
+      <div className="w-32">
+        <label className="block text-xs font-medium text-slate-600">
+          Price
+        </label>
         <input
           type="number"
+          min={0}
           step="0.01"
-          value={formData.price}
-          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-          className="w-full border p-2 rounded"
-          required
+          className="mt-1 w-full rounded border px-2 py-1 text-sm"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="35000"
         />
       </div>
 
-      <div>
-        <label className="block mb-2 font-medium">Description</label>
+      <div className="w-40">
+        <label className="block text-xs font-medium text-slate-600">
+          Category
+        </label>
+        <select
+          className="mt-1 w-full rounded border px-2 py-1 text-sm"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">Select category</option>
+          {CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="min-w-[220px] flex-1">
+        <label className="block text-xs font-medium text-slate-600">
+          Image
+        </label>
+        <div className="mt-1">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImageFile(file);
+                setImage('');
+              }
+            }}
+            className="w-full text-sm file:mr-3 file:rounded file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white hover:file:bg-slate-800"
+          />
+          {imageFile && (
+            <p className="mt-1 text-xs text-slate-500">
+              Selected: {imageFile.name}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="basis-full">
+        <label className="block text-xs font-medium text-slate-600">
+          Description
+        </label>
         <textarea
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          className="w-full border p-2 rounded"
-          rows={3}
+          className="mt-1 w-full rounded border px-2 py-1 text-sm"
+          rows={2}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Short description of the dish"
         />
-      </div>
-
-      <div>
-        <label className="block mb-2 font-medium">Category</label>
-        <input
-          type="text"
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({ ...formData, category: e.target.value })
-          }
-          className="w-full border p-2 rounded"
-        />
-      </div>
-
-      <div>
-        <label className="block mb-2 font-medium">Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="w-full border p-2 rounded"
-        />
-        {imageUrl && (
-          <div className="mt-4">
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="max-w-xs rounded border"
-            />
-          </div>
-        )}
       </div>
 
       <button
         type="submit"
-        disabled={uploading}
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
+        disabled={isSubmitting}
+        className="h-9 rounded bg-slate-900 px-4 text-sm font-medium text-white disabled:opacity-60"
       >
-        {uploading ? "Uploading..." : "Add Menu Item"}
+        {isSubmitting ? 'Saving…' : editItem ? 'Update menu item' : 'Add menu item'}
       </button>
+
+      {error && (
+        <p className="mt-2 w-full text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </form>
   );
 }

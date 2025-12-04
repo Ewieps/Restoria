@@ -1,4 +1,3 @@
-// app/admin/AdminPageClient.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,7 +10,8 @@ type MenuItem = {
   description: string | null;
   price: number;
   category: string | null;
-  createdAt: string; 
+  image: string | null;
+  createdAt: string;
 };
 
 export default function AdminPageClient() {
@@ -19,6 +19,7 @@ export default function AdminPageClient() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -30,14 +31,11 @@ export default function AdminPageClient() {
 
     setIsAuthenticated(true);
 
-    // fetch menu items via API
     async function loadItems() {
       try {
         const res = await fetch('/api/menu-items', {
           headers: {
             'Content-Type': 'application/json',
-            // add Authorization later if you protect this endpoint
-            // Authorization: `Bearer ${token}`,
           },
         });
 
@@ -62,6 +60,54 @@ export default function AdminPageClient() {
     router.push('/admin/login');
   }
 
+  async function refreshItems() {
+    setEditingItem(null); // Clear edit mode after success
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/menu-items', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) throw new Error('Failed to reload menu');
+      const data = await res.json();
+      setItems(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function handleEdit(item: MenuItem) {
+    setEditingItem(item);
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handleCancelEdit() {
+    setEditingItem(null);
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/menu-items/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+
+      if (!res.ok) throw new Error('Failed to delete');
+      
+      await refreshItems();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      alert('Failed to delete item');
+    }
+  }
+
   if (!isAuthenticated) {
     return <div>Loading...</div>;
   }
@@ -74,7 +120,7 @@ export default function AdminPageClient() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <h1 className="text-xl font-bold">Admin - Menu Management</h1>
+          <h1 className="text-xl font-bold">Admin – Menu Management</h1>
           <button
             onClick={logoutHandler}
             className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
@@ -84,8 +130,26 @@ export default function AdminPageClient() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl py-8 space-y-6 px-4">
-        <MenuConfiguration />
+      <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
+        {/* Show edit indicator */}
+        {editingItem && (
+          <div className="flex items-center justify-between rounded-md bg-blue-50 px-4 py-3">
+            <p className="text-sm font-medium text-blue-900">
+              Editing: {editingItem.name}
+            </p>
+            <button
+              onClick={handleCancelEdit}
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
+            >
+              Cancel Edit
+            </button>
+          </div>
+        )}
+
+        <MenuConfiguration 
+          editItem={editingItem} 
+          onSuccess={refreshItems} 
+        />
 
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Menu Items</h2>
@@ -102,6 +166,7 @@ export default function AdminPageClient() {
               <th className="border-b px-3 py-2 text-left">Category</th>
               <th className="border-b px-3 py-2 text-right">Price</th>
               <th className="border-b px-3 py-2 text-left">Created</th>
+              <th className="border-b px-3 py-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -121,12 +186,26 @@ export default function AdminPageClient() {
                     .slice(0, 16)
                     .replace('T', ' ')}
                 </td>
+                <td className="border-b px-3 py-2">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="mr-3 text-blue-600 hover:text-blue-800"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
             {items.length === 0 && (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={6}
                   className="px-3 py-4 text-center text-slate-900"
                 >
                   No menu items yet. Create one above.

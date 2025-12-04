@@ -1,4 +1,6 @@
-import Image from "next/image";
+'use client';
+
+import Image from 'next/image';
 
 interface MenuCardProps {
   id: number;
@@ -20,9 +22,9 @@ export default function MenuCard({
   onAddToCart,
 }: MenuCardProps) {
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
       minimumFractionDigits: 0,
     }).format(price);
   };
@@ -63,7 +65,7 @@ export default function MenuCard({
         {/* Category Badge */}
         {category && (
           <div className="absolute left-3 top-3">
-            <span className="rounded-full bg-teal-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
+            <span className="rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-lg backdrop-blur-sm">
               {category}
             </span>
           </div>
@@ -72,7 +74,7 @@ export default function MenuCard({
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-xl font-bold text-black dark:text-white">
+        <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
           {name}
         </h3>
         
@@ -84,13 +86,14 @@ export default function MenuCard({
 
         <div className="mt-auto pt-5">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">
+            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
               {formatPrice(price)}
             </span>
             
             <button
               onClick={() => onAddToCart?.(id)}
-              className="flex h-11 items-center justify-center gap-2 rounded-full bg-teal-500 px-6 text-sm font-semibold text-white shadow-lg shadow-teal-500/30 transition-all hover:bg-teal-600 hover:shadow-xl hover:shadow-teal-500/40 active:scale-95"
+              className="flex h-11 items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-600 hover:shadow-xl hover:shadow-emerald-500/40 active:scale-95"
+              aria-label={`Add ${name} to cart`}
             >
               <svg
                 className="h-4 w-4"
