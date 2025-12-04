@@ -41,7 +41,6 @@ export default function ReservationForm({
       ...prev,
       [name]: name === "guests" ? parseInt(value) || 0 : value,
     }));
-    // Clear error when user starts typing
     if (errors[name as keyof ReservationData]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -74,7 +73,6 @@ export default function ReservationForm({
     e.preventDefault();
     if (validateForm()) {
       onSubmit?.(formData);
-      // Reset form
       setFormData({
         name: "",
         contact: "",
@@ -91,15 +89,12 @@ export default function ReservationForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative w-full max-w-md animate-fadeIn rounded-2xl bg-white shadow-2xl dark:bg-zinc-900">
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="text-2xl font-bold text-black dark:text-white">
             Buat Reservasi
@@ -124,10 +119,8 @@ export default function ReservationForm({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
-            {/* Nama Lengkap */}
             <div>
               <label
                 htmlFor="name"
@@ -149,7 +142,6 @@ export default function ReservationForm({
               )}
             </div>
 
-            {/* Email/Contact */}
             <div>
               <label
                 htmlFor="contact"
@@ -171,7 +163,6 @@ export default function ReservationForm({
               )}
             </div>
 
-            {/* Tanggal & Waktu */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label
@@ -215,7 +206,6 @@ export default function ReservationForm({
               </div>
             </div>
 
-            {/* Jumlah Orang */}
             <div>
               <label
                 htmlFor="guests"
@@ -235,7 +225,6 @@ export default function ReservationForm({
               />
             </div>
 
-            {/* Catatan (Optional) */}
             <div>
               <label
                 htmlFor="note"
@@ -255,7 +244,6 @@ export default function ReservationForm({
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="mt-6 w-full rounded-xl bg-teal-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/30 transition-all hover:bg-teal-600 hover:shadow-xl hover:shadow-teal-500/40 active:scale-[0.98]"
