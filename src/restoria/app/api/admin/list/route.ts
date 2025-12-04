@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!['store-manager', 'cashier', 'server'].includes(role)) {
+    if (!['storemanager', 'cashier', 'server'].includes(role)) {
       return NextResponse.json(
         { message: 'Invalid role' },
         { status: 400 },

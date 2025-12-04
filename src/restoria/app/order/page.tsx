@@ -71,7 +71,7 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
       <div className="container mx-auto px-4 py-10 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900">
+        <h1 className="text-3xl font-bold text-slate-800 mb-6 text-gray-900">
           Pesanan & Reservasi Saya
         </h1>
 
@@ -105,12 +105,12 @@ export default function OrdersPage() {
 
         {orders.length > 0 && (
           <section className="mb-10">
-            <h2 className="text-2xl font-bold mb-4">Pesanan</h2>
+            <h2 className="text-2xl font-bold text-slate-800 mb-4">Pesanan</h2>
             <div className="space-y-4">
               {orders.map((order) => (
                 <div key={order.id} className="bg-white rounded-xl p-4 shadow-sm">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-slate-700">
                       Pesanan #{order.id} • Meja {order.tableNumber ?? '-'}
                     </span>
                     <span className="text-sm capitalize text-gray-600">
@@ -135,12 +135,12 @@ export default function OrdersPage() {
 
         {reservations.length > 0 && (
           <section>
-            <h2 className="text-2xl font-bold mb-4">Reservasi</h2>
+            <h2 className="text-2xl font-bold text-slate-800 mb-4">Reservasi</h2>
             <div className="space-y-4">
               {reservations.map((r) => (
                 <div key={r.id} className="bg-white rounded-xl p-4 shadow-sm">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-slate-700">
                       Reservasi #{r.id} • {r.guests} orang
                     </span>
                     <span className="text-sm capitalize text-gray-600">
@@ -151,7 +151,7 @@ export default function OrdersPage() {
                     {new Date(r.date).toLocaleString('id-ID')}
                   </div>
                   {r.note && (
-                    <p className="text-xs text-gray-500 mt-1">Catatan: {r.note}</p>
+                    <p className="text-xs text-gray-800 mt-1">Catatan: {r.note}</p>
                   )}
                 </div>
               ))}

@@ -27,11 +27,11 @@ export function HomePage({ onViewMenu, onSearch }: HomePageProps) {
           <div className="inline-block bg-emerald-600 rounded-full p-6 mb-6">
             <span className="text-6xl">🍽️</span>
           </div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-5xl font-bold text-slate-800 text-gray-900 mb-4">
             Selamat Datang di <span className="text-emerald-600">Restoran Kami</span>
           </h1>
           <p className="text-xl text-gray-600">
-            Nikmati hidangan terbaik dengan bahan berkualitas
+            Nikmati hidangan terbaik dengan bahan berkualitas.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export function HomePage({ onViewMenu, onSearch }: HomePageProps) {
             className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2"
           >
             <div className="text-6xl mb-4">📖</div>
-            <h3 className="text-2xl font-bold mb-2">Lihat Menu</h3>
+            <h3 className="text-2xl font-bold text-slate-800 mb-2">Lihat Menu</h3>
             <p className="text-gray-600">
               Jelajahi menu lengkap kami
             </p>
@@ -73,7 +73,7 @@ export function HomePage({ onViewMenu, onSearch }: HomePageProps) {
             className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2"
           >
             <div className="text-6xl mb-4">📅</div>
-            <h3 className="text-2xl font-bold mb-2">Reservasi</h3>
+            <h3 className="text-2xl font-bold text-slate-800 mb-2">Reservasi</h3>
             <p className="text-gray-600">
               Pesan meja Anda
             </p>
@@ -84,7 +84,7 @@ export function HomePage({ onViewMenu, onSearch }: HomePageProps) {
             className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2"
           >
             <div className="text-6xl mb-4">📋</div>
-            <h3 className="text-2xl font-bold mb-2">Pesanan Saya</h3>
+            <h3 className="text-2xl font-bold text-slate-800 mb-2">Pesanan Saya</h3>
             <p className="text-gray-600">
               Lacak status pesanan
             </p>

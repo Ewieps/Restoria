@@ -88,7 +88,7 @@ export function MenuPage({
               </svg>
               Kembali
             </button>
-            <h1 className="text-2xl font-bold text-gray-900">Menu Kami</h1>
+            <h1 className="text-2xl font-bold text-slate-800 text-gray-900">Menu Kami</h1>
             <div className="w-24" />
           </div>
         </div>
@@ -100,7 +100,7 @@ export function MenuPage({
           <div className="mb-6 p-4 bg-emerald-50 rounded-lg">
             <p className="text-emerald-800">
               Hasil pencarian untuk:{' '}
-              <span className="font-bold">"{searchQuery}"</span>
+              <span className="font-bold text-slate-800">"{searchQuery}"</span>
             </p>
           </div>
         )}
@@ -126,7 +126,7 @@ export function MenuPage({
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4" />
+              <div className="animate-spin rounded-full h-12 w-12 border-b text-slate-600-2 border-emerald-600 mx-auto mb-4" />
               <p className="text-gray-600">Memuat menu...</p>
             </div>
           </div>

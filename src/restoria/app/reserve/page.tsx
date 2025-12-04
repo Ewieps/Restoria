@@ -63,7 +63,7 @@ export default function ReservationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
       <div className="container mx-auto px-4 py-10 max-w-xl">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900">
+        <h1 className="text-3xl font-bold text-slate-800 mb-6 text-gray-900">
           Buat Reservasi
         </h1>
 
@@ -156,7 +156,7 @@ export default function ReservationPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-60"
+            className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold text-slate-700 hover:bg-emerald-700 transition-colors disabled:opacity-60"
           >
             {loading ? 'Mengirim...' : 'Kirim Reservasi'}
           </button>

@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-100">
       <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow">
-        <h1 className="mb-4 text-xl font-bold text-slate-900">
+        <h1 className="mb-4 text-xl font-bold text-slate-800 text-slate-900">
           Admin Login
         </h1>
 

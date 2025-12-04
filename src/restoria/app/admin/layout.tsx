@@ -1,4 +1,3 @@
-// app/admin/layout.tsx
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -6,7 +5,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex">
       <aside className="w-72 bg-slate-900 text-white p-4 space-y-4">
-        <h1 className="text-xl font-bold">Restoria Admin Panel
+        <h1 className="text-xl font-bold text-slate-800">Restoria Admin Panel
 
         </h1>
         <nav className="space-y-2">

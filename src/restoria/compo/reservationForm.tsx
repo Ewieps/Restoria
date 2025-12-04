@@ -95,8 +95,8 @@ export default function ReservationForm({
       />
 
       <div className="relative w-full max-w-md animate-fadeIn rounded-2xl bg-white shadow-2xl dark:bg-zinc-900">
-        <div className="flex items-center justify-between border-b border-zinc-200 p-6 dark:border-zinc-800">
-          <h2 className="text-2xl font-bold text-black dark:text-white">
+        <div className="flex items-center justify-between border-b text-slate-600 border-zinc-200 p-6 dark:border-zinc-800">
+          <h2 className="text-2xl font-bold text-slate-800 text-black dark:text-white">
             Buat Reservasi
           </h2>
           <button
@@ -124,7 +124,7 @@ export default function ReservationForm({
             <div>
               <label
                 htmlFor="name"
-                className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-semibold text-slate-700 text-zinc-700 dark:text-zinc-300"
               >
                 Nama Lengkap
               </label>
@@ -145,9 +145,9 @@ export default function ReservationForm({
             <div>
               <label
                 htmlFor="contact"
-                className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-semibold text-slate-700 text-zinc-700 dark:text-zinc-300"
               >
-                Email / No. Telepon
+              No. Telepon
               </label>
               <input
                 type="text"
@@ -167,7 +167,7 @@ export default function ReservationForm({
               <div>
                 <label
                   htmlFor="date"
-                  className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+                  className="mb-2 block text-sm font-semibold text-slate-700 text-zinc-700 dark:text-zinc-300"
                 >
                   Tanggal
                 </label>
@@ -188,7 +188,7 @@ export default function ReservationForm({
               <div>
                 <label
                   htmlFor="time"
-                  className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+                  className="mb-2 block text-sm font-semibold text-slate-700 text-zinc-700 dark:text-zinc-300"
                 >
                   Waktu
                 </label>
@@ -209,7 +209,7 @@ export default function ReservationForm({
             <div>
               <label
                 htmlFor="guests"
-                className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-semibold text-slate-700 text-zinc-700 dark:text-zinc-300"
               >
                 Jumlah Orang
               </label>
@@ -228,7 +228,7 @@ export default function ReservationForm({
             <div>
               <label
                 htmlFor="note"
-                className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-semibold text-slate-700 text-zinc-700 dark:text-zinc-300"
               >
                 Catatan <span className="text-zinc-400">(Opsional)</span>
               </label>
@@ -246,7 +246,7 @@ export default function ReservationForm({
 
           <button
             type="submit"
-            className="mt-6 w-full rounded-xl bg-teal-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/30 transition-all hover:bg-teal-600 hover:shadow-xl hover:shadow-teal-500/40 active:scale-[0.98]"
+            className="mt-6 w-full rounded-xl bg-teal-500 py-3.5 text-sm font-semibold text-slate-700 text-white shadow-lg shadow-teal-500/30 transition-all hover:bg-teal-600 hover:shadow-xl hover:shadow-teal-500/40 active:scale-[0.98]"
           >
             Konfirmasi Reservasi
           </button>

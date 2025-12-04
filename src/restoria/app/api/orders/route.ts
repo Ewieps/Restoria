@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         contact: data.contact,
         tableNumber: data.tableNumber,
         total: data.total,
-        status: data.status, // or let default 'pending' handle it
+        status: data.status, 
         items: {
           create: items.map((it: { menuItemId: number; quantity: number }) => ({
             menuItemId: it.menuItemId,

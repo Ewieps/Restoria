@@ -16,7 +16,7 @@ type JwtPayload = {
   exp?: number;
 };
 
-const STAFF_ROLES = ['store-manager', 'cashier', 'server'];
+const STAFF_ROLES = ['storemanager', 'cashier', 'server'];
 
 function parseJwt(token: string): JwtPayload | null {
   if (!token) return null;
@@ -35,10 +35,10 @@ export default function StaffPageClient() {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('store-manager');
+  const [role, setRole] = useState('storemanager');
   const [error, setError] = useState<string | null>(null);
 
-  // NEW: track current mainadmin id
+
   const [currentAdminId, setCurrentAdminId] = useState<number | null>(null);
 
   async function loadAdmins() {
@@ -114,7 +114,7 @@ export default function StaffPageClient() {
       }
       setUsername('');
       setPassword('');
-      setRole('store-manager');
+      setRole('storemanager');
       await loadAdmins();
     } catch (err: any) {
       setError(err.message ?? 'Error creating staff');
@@ -180,7 +180,7 @@ export default function StaffPageClient() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <h1 className="text-xl font-bold">Admin – Staff Management</h1>
+          <h1 className="text-xl font-bold text-slate-800">Admin – Staff Management</h1>
         </div>
       </div>
 
@@ -241,11 +241,11 @@ export default function StaffPageClient() {
         <table className="min-w-full border border-slate-200 bg-white text-sm">
           <thead className="bg-slate-100">
             <tr>
-              <th className="border-b px-3 py-2 text-left">ID</th>
-              <th className="border-b px-3 py-2 text-left">Username</th>
-              <th className="border-b px-3 py-2 text-left">Role</th>
-              <th className="border-b px-3 py-2 text-left">Created</th>
-              <th className="border-b px-3 py-2 text-left">Actions</th>
+              <th className="border-b text-slate-600 px-3 py-2 text-left">ID</th>
+              <th className="border-b text-slate-600 px-3 py-2 text-left">Username</th>
+              <th className="border-b text-slate-600 px-3 py-2 text-left">Role</th>
+              <th className="border-b text-slate-600 px-3 py-2 text-left">Created</th>
+              <th className="border-b text-slate-600 px-3 py-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -253,9 +253,9 @@ export default function StaffPageClient() {
               .filter((a) => a.id !== currentAdminId) 
               .map((a) => (
                 <tr key={a.id} className="hover:bg-slate-50">
-                  <td className="border-b px-3 py-2">{a.id}</td>
-                  <td className="border-b px-3 py-2">{a.username}</td>
-                  <td className="border-b px-3 py-2">
+                  <td className="border-b text-slate-600 px-3 py-2">{a.id}</td>
+                  <td className="border-b text-slate-600 px-3 py-2">{a.username}</td>
+                  <td className="border-b text-slate-600 px-3 py-2">
                     <select
                       className="rounded border px-2 py-1 text-xs"
                       value={a.role}
@@ -268,13 +268,13 @@ export default function StaffPageClient() {
                       ))}
                     </select>
                   </td>
-                  <td className="border-b px-3 py-2 text-sm text-slate-500">
+                  <td className="border-b text-slate-600 px-3 py-2 text-sm text-slate-500">
                     {new Date(a.createdAt)
                       .toISOString()
                       .slice(0, 16)
                       .replace('T', ' ')}
                   </td>
-                  <td className="border-b px-3 py-2">
+                  <td className="border-b text-slate-600 px-3 py-2">
                     <button
                       onClick={() => handleDelete(a.id)}
                       className="rounded bg-red-500 px-2 py-1 text-xs text-white hover:bg-red-600"

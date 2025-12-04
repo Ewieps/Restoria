@@ -57,11 +57,10 @@ export default function MenuConfiguration({ onSuccess, editItem }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // optional: store role for UI decisions
+
   const [role, setRole] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
-  // Populate form when editing
   useEffect(() => {
     if (editItem) {
       setName(editItem.name);
@@ -80,7 +79,7 @@ export default function MenuConfiguration({ onSuccess, editItem }: Props) {
     }
 
     const payload = parseJwt(token);
-    if (!payload || !['mainadmin', 'store-manager'].includes(payload.role)) {
+    if (!payload || !['mainadmin', 'storemanager'].includes(payload.role)) {
       router.push('/admin/login');
       return;
     }
@@ -108,7 +107,6 @@ export default function MenuConfiguration({ onSuccess, editItem }: Props) {
 
       let imageUrl = image;
 
-      // Upload image if a file is selected
       if (imageFile) {
         try {
           const uploadResult = await startUpload([imageFile]);
