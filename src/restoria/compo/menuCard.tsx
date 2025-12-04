@@ -31,7 +31,6 @@ export default function MenuCard({
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-md transition-all hover:shadow-xl dark:bg-zinc-900/80 dark:backdrop-blur-sm">
-      {/* Image Container */}
       <div className="relative h-56 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
         {image ? (
           <Image
@@ -59,10 +58,8 @@ export default function MenuCard({
           </div>
         )}
         
-        {/* Dark Overlay for Better Text Contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         
-        {/* Category Badge */}
         {category && (
           <div className="absolute left-3 top-3">
             <span className="rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-lg backdrop-blur-sm">
@@ -72,7 +69,6 @@ export default function MenuCard({
         )}
       </div>
 
-      {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
           {name}

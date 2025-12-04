@@ -44,7 +44,7 @@ export function MenuPage({
     fetchMenu();
   }, []);
 
-  // type guard removes null so categories becomes string[]
+
   const categories: string[] = [
     'all',
     ...new Set(
@@ -65,7 +65,7 @@ export function MenuPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
-      {/* Header */}
+
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -95,7 +95,7 @@ export function MenuPage({
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search Info */}
+
         {searchQuery && (
           <div className="mb-6 p-4 bg-emerald-50 rounded-lg">
             <p className="text-emerald-800">
@@ -105,7 +105,6 @@ export function MenuPage({
           </div>
         )}
 
-        {/* Category Filter */}
         <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
           {categories.map((cat) => (
             <button
@@ -124,7 +123,6 @@ export function MenuPage({
           ))}
         </div>
 
-        {/* Loading / Results */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="text-center">

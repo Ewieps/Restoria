@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { HomePage } from '@/compo/homePage';
 import { MenuPage } from '@/compo/menuPage';
+import { CartPage } from '@/compo/cartPage';
 
 type MenuItem = {
   id: number;
@@ -17,8 +18,10 @@ type CartItem = MenuItem & {
   quantity: number;
 };
 
+type View = 'home' | 'menu' | 'cart';
+
 export default function Home() {
-  const [currentView, setCurrentView] = useState<'home' | 'menu'>('home');
+  const [currentView, setCurrentView] = useState<View>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
 
@@ -40,26 +43,41 @@ export default function Home() {
     alert(`${item.name} ditambahkan ke keranjang!`);
   };
 
+  const updateQuantity = (id: number, quantity: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
+
+  const handleCheckout = async () => {
+    // TODO: Send order to backend
+    alert('Pesanan berhasil! Fitur checkout akan segera hadir.');
+    setCart([]);
+    setCurrentView('home');
+  };
+
   return (
     <div className="min-h-screen">
-      {currentView === 'home' ? (
+      {currentView === 'home' && (
         <HomePage
           onViewMenu={() => {
             setSearchQuery('');
             setCurrentView('menu');
-          }}
-          onViewOrders={() => {
-            alert('Halaman pesanan akan segera hadir!');
-          }}
-          onReservation={() => {
-            alert('Halaman reservasi akan segera hadir!');
           }}
           onSearch={(query) => {
             setSearchQuery(query);
             setCurrentView('menu');
           }}
         />
-      ) : (
+      )}
+
+      {currentView === 'menu' && (
         <MenuPage
           searchQuery={searchQuery}
           onBack={() => {
@@ -70,14 +88,20 @@ export default function Home() {
         />
       )}
 
+      {currentView === 'cart' && (
+        <CartPage
+          cart={cart}
+          onUpdateQuantity={updateQuantity}
+          onRemoveItem={removeFromCart}
+          onBack={() => setCurrentView('menu')}
+          onCheckout={handleCheckout}
+        />
+      )}
+
       {/* Cart Badge (floating button) */}
-      {cart.length > 0 && (
+      {cart.length > 0 && currentView !== 'cart' && (
         <button
-          onClick={() => {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            alert(`Keranjang Anda:\n${totalItems} item\nTotal: Rp ${totalPrice.toLocaleString('id-ID')}`);
-          }}
+          onClick={() => setCurrentView('cart')}
           className="fixed bottom-6 right-6 bg-emerald-600 text-white rounded-full p-4 shadow-2xl hover:bg-emerald-700 transition-all hover:scale-110 z-50"
         >
           <div className="relative">

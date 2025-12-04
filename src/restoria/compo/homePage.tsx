@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type HomePageProps = {
   onViewMenu: () => void;
-  onViewOrders: () => void;
-  onReservation: () => void;
   onSearch: (query: string) => void;
 };
 
-export function HomePage({ onViewMenu, onViewOrders, onReservation, onSearch }: HomePageProps) {
+export function HomePage({ onViewMenu, onSearch }: HomePageProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +69,7 @@ export function HomePage({ onViewMenu, onViewOrders, onReservation, onSearch }: 
 
    
           <button
-            onClick={onReservation}
+            onClick={() => router.push('/reserve')}
             className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2"
           >
             <div className="text-6xl mb-4">📅</div>
@@ -80,7 +80,7 @@ export function HomePage({ onViewMenu, onViewOrders, onReservation, onSearch }: 
           </button>
 
           <button
-            onClick={onViewOrders}
+            onClick={() => router.push('/order')}
             className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2"
           >
             <div className="text-6xl mb-4">📋</div>
